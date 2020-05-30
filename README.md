@@ -1,5 +1,7 @@
 # overhead - a simple overhead display for Windows.
 
+![overhead title image](https://github.com/edwinst/overhead/raw/master/overhead_title_gray_304px.png)
+
 ## Summary
 
 This program can display the outlines of the transparent areas
