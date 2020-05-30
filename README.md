@@ -40,7 +40,7 @@ if you so desire.
 
 ## Usage
 
-See comments `overhead.cpp` for an explanation of how to use this program.
+See comments in `overhead.cpp` for an explanation of how to use this program.
 
 ## Credits
 
