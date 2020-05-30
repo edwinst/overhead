@@ -721,6 +721,7 @@ namespace {
         HBITMAP old_bitmap = (HBITMAP)::SelectObject(memory_dc, bitmap);
         if (!old_bitmap)
             exit_windows_system_error("could not select bitmap into memory device context");
+        (void)::DeleteObject(old_bitmap);
         HFONT old_font;
         COLORREF old_color;
         COLORREF old_bk_color;
@@ -751,6 +752,8 @@ namespace {
                     memory_dc, 0, 0, SRCCOPY))
             exit_windows_system_error("bit block transfer failed");
         (void)::DeleteDC(memory_dc);
+        if (!::DeleteObject(bitmap))
+            exit_windows_system_error("could not delete compatible bitmap");
         (void)::EndPaint(hWnd, &paint);
     }
 
