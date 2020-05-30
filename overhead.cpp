@@ -317,7 +317,7 @@ namespace {
         uint32_t aligned_size = aligned_scanline_size * image_height;
         g_background_image_data = (uint8_t*)malloc(aligned_size);
         if (!g_background_image_data)
-            exit_error("could not allocate memory for background bitmap");
+            exit_error("out of memory: could not allocate memory for background bitmap");
         for (uint32_t y = 0; y < (uint32_t)image_height; ++y)
             for (uint32_t x = 0; x < (uint32_t)image_width; ++x) {
                 g_background_image_data[aligned_scanline_size * y + 3*x + 0] = data[unaligned_scanline_size * y + 3*x + 2];
@@ -336,7 +336,7 @@ namespace {
             g_marker_windows.n_allocated *= 2;
             MarkerWindow *new_array = (MarkerWindow*)realloc(g_marker_windows.array, g_marker_windows.n_allocated * sizeof(MarkerWindow));
             if (!new_array)
-                exit_error("out of memory: could not reallocate marker window array");
+                exit_error("out of memory: could not grow marker window array");
             g_marker_windows.array = new_array;
         }
         assert(g_marker_windows.n_used < g_marker_windows.n_allocated);
@@ -377,6 +377,8 @@ namespace {
         };
 
         RowInfo *rows = (RowInfo*)malloc(image_height * sizeof(RowInfo));
+        if (!rows)
+            exit_error("out of memory: could not allocate RowInfo array");
         for (int y = 0; y < image_height; ++y) {
             RowInfo *row = rows + y;
             row->transparent_start = 0;
@@ -421,6 +423,8 @@ namespace {
         g_marker_windows.n_allocated = 1;
         g_marker_windows.n_used = 0;
         g_marker_windows.array = (MarkerWindow*)malloc(g_marker_windows.n_allocated * sizeof(MarkerWindow));
+        if (!g_marker_windows.array)
+            exit_error("out of memory: could not allocate MarkerWindow array");
 
         int prev_left_index = -1;
         int prev_right_index = -1;
