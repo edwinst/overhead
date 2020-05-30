@@ -55,6 +55,16 @@ namespace {
        straight line portion is translated into a separate application
        window. (This is to avoid reliance on the compositing window
        manager as mentioned above.)
+
+    Limitations
+    -----------
+
+    The program sets the window styles that put it on top of all other
+    windows. However, it may loose the fight against the Windows task bar
+    which also draws itself over all other windows. Therefore you should
+    avoid putting your countdown timer in the area covered by the Windows
+    task bar. Please tell me if you find a simple way to remove this
+    limitation.
  */
 
 /*
