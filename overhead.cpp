@@ -113,6 +113,12 @@ the stb_image library see the end of the file
 //#define UNICODE
 #include <windows.h>
 
+//#define DEBUG_MEMORY_USE
+
+#ifdef DEBUG_MEMORY_USE
+#include <psapi.h>
+#endif
+
 namespace {
     HWND g_main_window = NULL;
 
@@ -693,6 +699,25 @@ namespace {
 
     void paint_countdown_window(HWND hWnd)
     {
+#ifdef DEBUG_MEMORY_USE
+        {
+            static uint64_t debug_count = 0;
+            static uint64_t last_changed = 0;
+            static uint64_t prev = 0;
+            PROCESS_MEMORY_COUNTERS mem = { 0 };
+            mem.cb = sizeof(mem);
+            if (::GetProcessMemoryInfo(::GetCurrentProcess(), &mem, mem.cb)) {
+                printf("%10" PRIu64 " (not changed for %10" PRIu64 ") mem: work %8zu peak %8zu\n",
+                        debug_count, debug_count - last_changed, mem.WorkingSetSize, mem.PeakWorkingSetSize);
+                if (mem.WorkingSetSize != prev) {
+                    prev = mem.WorkingSetSize;
+                    last_changed = debug_count;
+                }
+            }
+            debug_count++;
+        }
+#endif
+
         if (!g_countdown_minutes)
             return;
         PAINTSTRUCT paint;
@@ -818,7 +843,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 SYSTEMTIME remaining;
                 if (calculate_time_until_expiry(&remaining)) {
                     // set the next timer expiry right after the second flips
-                    UINT_PTR timer = ::SetTimer(hWnd, wParam, max(USER_TIMER_MINIMUM, remaining.wMilliseconds + 1), NULL);
+                    UINT elapse = max(USER_TIMER_MINIMUM, remaining.wMilliseconds + 1);
+#ifdef DEBUG_MEMORY_USE
+                    elapse = USER_TIMER_MINIMUM; // stress the paint function
+#endif
+                    UINT_PTR timer = ::SetTimer(hWnd, wParam, elapse, NULL);
                     if (!timer)
                         exit_windows_system_error("could not re-set update timer");
                 }
@@ -850,6 +879,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (!timer)
             exit_windows_system_error("could not set update timer");
     }
+
+#ifdef DEBUG_MEMORY_USE
+    open_console_window();
+#endif
 
     MSG msg = {0};
     while (::GetMessage(&msg, NULL, 0, 0))
