@@ -41,3 +41,9 @@ if you so desire.
 ## Usage
 
 See comments `overhead.cpp` for an explanation of how to use this program.
+
+## Credits
+
+`overhead` uses the great image loading library [stb_image](https://github.com/nothings/stb) by Sean Barrett.
+
+The program itself was written by Edwin Steiner.
