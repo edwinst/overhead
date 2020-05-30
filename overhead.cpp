@@ -52,9 +52,9 @@ namespace {
        very dumb and will work well only for relatively simple shapes.
        The outline of the transparent area should be made piecewise of
        not too many horizontal and vertical straight lines because every
-       straight line portion is translated into a separate application
-       window. (This is to avoid reliance on the compositing window
-       manager as mentioned above.)
+       straight line portion is translated into a separate window.
+       (This is to avoid reliance on the compositing window manager
+       as mentioned above.)
 
     Limitations
     -----------
