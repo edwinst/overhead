@@ -658,12 +658,14 @@ namespace {
                     case 2:
                     case 3:
                         {
+                            static char *positional_arg_names[] = { "X", "Y", "W", "H" };
+                            assert(index < sizeof(positional_arg_names)/sizeof(positional_arg_names[0]));
                             char *parseend = nullptr;
                             long value = strtol(arg, &parseend, 10);
                             if (parseend != end)
                                 exit_error("command-line argument did not parse as an integer: %s\n", arg);
-                            if (value < INT_MIN || value > INT_MAX)
-                                exit_error("command-line argument is out of range: %s\n", arg);
+                            if (value < (index < 2 ? INT_MIN : 0) || value > INT_MAX)
+                                exit_error("command-line argument %s is out of range: %s\n", positional_arg_names[index], arg);
                             switch (index) {
                                 case 0: g_position_x = (int)value; break;
                                 case 1: g_position_y = (int)value; break;
