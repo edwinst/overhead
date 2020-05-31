@@ -441,7 +441,7 @@ namespace {
                 continue;
             }
             // we have at least one transparent pixel in this row
-            if (prev_left_index < 0 && y > 0) {
+            if (y > 0 && rows[y - 1].transparent_start >= rows[y - 1].transparent_end) {
                 // the row before was fully opaque, so draw a horizontal marker in it
                 add_marker_rectangle(row->transparent_start, y - 1, row->transparent_end - row->transparent_start, 1);
             }
