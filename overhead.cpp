@@ -260,8 +260,8 @@ namespace {
     int g_position_x = 0;
     int g_position_y = 0;
     CHAR *g_background_image_filename = nullptr;
-    int g_background_image_width = 150;
-    int g_background_image_height = 25;
+    int g_background_image_width  = -1; // sensible default is set in parse_command_line
+    int g_background_image_height = -1; // sensible default is set in parse_command_line
     uint8_t *g_background_image_data = nullptr;
     BITMAPINFO g_background_image_info = { 0 };
 
@@ -681,6 +681,12 @@ namespace {
             }
             free(arg);
         }
+
+        // default to zero size window if there is no countdown
+        if (g_background_image_width < 0)
+            g_background_image_width = g_countdown_minutes ? 150 : 0;
+        if (g_background_image_height < 0)
+            g_background_image_height = g_countdown_minutes ? 25 : 0;
     }
 
     // XXX @Leak the font is never deleted currently
