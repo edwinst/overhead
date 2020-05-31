@@ -630,7 +630,6 @@ namespace {
     void parse_command_line(LPSTR cmdline)
     {
         // XXX @Incomplete extend this function for UNICODE
-        // XXX @Incomplete filenames containing spaces are not supported
         uint32_t index = 0;
         char *arg;
         while ((arg = consume_and_dup_command_line_argument(&cmdline))) {
