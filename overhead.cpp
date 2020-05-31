@@ -521,6 +521,9 @@ namespace {
 
         // XXX If only OBS would work with the compositing window manager, we could do so much nice
         //     stuff with a layered window. :LayeredWindow
+        //     In the future, if we can assume Windows >= 8 and the DWM is running,
+        //     we might actually rather want to use DirectComposition.
+        //     See: http://www.pjblewis.com/site/posts/2016-04-27-p2-efficient-alpha-blended-windows-directcomposition.html
 #if 0
         if (!::SetLayeredWindowAttributes(
                     window, // hwnd,
