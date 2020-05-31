@@ -727,14 +727,11 @@ namespace {
         }
 #endif
 
-        if (!g_countdown_minutes)
-            return;
         PAINTSTRUCT paint;
         HDC dc = ::BeginPaint(hWnd, &paint);
         if (!dc)
             exit_windows_system_error("BeginPaint failed");
         SYSTEMTIME remaining;
-        calculate_time_until_expiry(&remaining);
         HDC memory_dc;
         memory_dc = ::CreateCompatibleDC(dc);
         if (!memory_dc)
@@ -760,7 +757,7 @@ namespace {
         COLORREF old_color;
         COLORREF old_bk_color;
         int old_bk_mode;
-        if (g_font
+        if (g_countdown_minutes && g_font
                 && (old_font = (HFONT)::SelectObject(memory_dc, g_font))
                 && ((old_color = ::SetTextColor(memory_dc, RGB(255, 255, 255))) != CLR_INVALID)
                 && ((old_bk_color = ::SetBkColor(memory_dc, RGB(0, 0, 0))) != CLR_INVALID)
@@ -769,6 +766,7 @@ namespace {
         {
             char format_buf[20];
             int result;
+            calculate_time_until_expiry(&remaining);
             if (g_countdown_minutes >= 60)
                 result = snprintf(format_buf, sizeof(format_buf), "%2u:%02u:%02u", remaining.wHour, remaining.wMinute, remaining.wSecond);
             else
