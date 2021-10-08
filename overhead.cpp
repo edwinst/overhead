@@ -175,6 +175,8 @@ namespace {
 
     void prompt_for_console_key_press()
     {
+        fflush(stderr);
+        fflush(stdout);
         HANDLE hstdin = ::GetStdHandle(STD_INPUT_HANDLE);
         if (!hstdin || hstdin == INVALID_HANDLE_VALUE)
             return;
@@ -634,7 +636,10 @@ namespace {
         char *arg;
         while ((arg = consume_and_dup_command_line_argument(&cmdline))) {
             char *end = arg + strlen(arg);
-            if (strncmp(arg, "--background=", 13) == 0) {
+            if (strcmp(arg, "--help") == 0 || ((end == arg + 2) && (arg[1] == '?' || arg[1] == 'h' || arg[1] == 'H'))) {
+                exit_usage("Command line argument '%s' seems to ask for help, so here is some usage info:\n", arg);
+            }
+            else if (strncmp(arg, "--background=", 13) == 0) {
                 g_background_image_filename = _strdup(arg + 13);
             }
             else if (strncmp(arg, "--overlay=", 10) == 0) {
