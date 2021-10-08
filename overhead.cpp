@@ -876,7 +876,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             return ::DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
-}  
+}
+
+void prevent_windows_dpi_scaling()
+{
+    typedef BOOL WINAPI SetProcessDPIAwarenessContextFn(DPI_AWARENESS_CONTEXT context);
+    typedef BOOL WINAPI SetProcessDPIAwareFn(void);
+
+    HMODULE user32_dll = ::LoadLibraryW(L"user32.dll");
+    if (!user32_dll)
+        exit_windows_system_error("could not load user32.dll");
+    SetProcessDPIAwarenessContextFn *set_context_fn = (SetProcessDPIAwarenessContextFn*)::GetProcAddress(user32_dll, "SetProcessDPIAwarenessContext");
+    if (set_context_fn)
+        set_context_fn(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+    else {
+        SetProcessDPIAwareFn *set_aware_fn = (SetProcessDPIAwareFn*)::GetProcAddress(user32_dll, "SetProcessDPIAware");
+        if (set_aware_fn)
+            set_aware_fn();
+    }
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -885,6 +903,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     load_background_image();
     load_overlay_image_and_determine_marker_lines();
 
+    prevent_windows_dpi_scaling();
     ATOM window_class = register_window_class(hInstance, WndProc);
     create_main_window(hInstance, window_class);
     create_marker_windows(hInstance, window_class);
